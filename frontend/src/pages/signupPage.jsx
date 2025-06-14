@@ -1,4 +1,6 @@
-import "./pageCss/signupPage.css";
+
+
+import "./pagecss/signupPage.css";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router";
 import { UserContext } from "../context/contextApi";
