@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-
-
-
 import {
   MapContainer,
   TileLayer,
@@ -11,7 +8,6 @@ import {
   Popup,
 } from "react-leaflet";
 
-
 import L from "leaflet";
 import axios from "axios";
 import "leaflet/dist/leaflet.css";
@@ -20,14 +16,10 @@ import "leaflet-routing-machine";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 
-
-
 import SearchBar from "../components/searchBar";
 
-
-
+// ---------------- ROUTING COMPONENT ----------------
 const Routing = ({ from, to, setInfo }) => {
-    
   const map = useMap();
 
   useEffect(() => {
@@ -58,25 +50,26 @@ const Routing = ({ from, to, setInfo }) => {
   return null;
 };
 
-
-
-
-
-const MapClickHandler = ({ setPointB }) => {
+// ---------------- MAP CLICK HANDLER ----------------
+const MapClickHandler = ({ pointA, setPointA, pointB, setPointB }) => {
   useMapEvents({
     click(e) {
-      setPointB({ lat: e.latlng.lat, lng: e.latlng.lng });
+      const { lat, lng } = e.latlng;
+
+      if (!pointA) {
+        setPointA({ lat, lng });
+      } else if (!pointB) {
+        setPointB({ lat, lng });
+      } else {
+        setPointA({ lat, lng }); // Reset Point A
+        setPointB(null); // Reset Point B
+      }
     },
   });
   return null;
 };
 
-
-
-
-
-
-
+// ---------------- GEOCODING ----------------
 const geocode = async (query) => {
   try {
     const res = await axios.get("https://nominatim.openstreetmap.org/search", {
@@ -97,11 +90,7 @@ const geocode = async (query) => {
   }
 };
 
-
-
-
-
-
+// ---------------- MAIN COMPONENT ----------------
 export default function MapComponent() {
   const [center, setCenter] = useState({ lat: 28.61, lng: 77.23 });
   const [pointA, setPointA] = useState(null);
@@ -110,23 +99,15 @@ export default function MapComponent() {
   const [searchA, setSearchA] = useState("");
   const [searchB, setSearchB] = useState("");
 
-
-
-
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
-        const userLoc = { lat: latitude, lng: longitude };
-        setCenter(userLoc);
-        setPointA(userLoc);
+        setCenter({ lat: latitude, lng: longitude }); // Only set center
       },
       () => alert("Could not access location")
     );
   }, []);
-
-
-
 
   const handleSearch = async () => {
     const aLoc = searchA ? await geocode(searchA) : pointA;
@@ -136,56 +117,44 @@ export default function MapComponent() {
     setInfo(null);
   };
 
-
-
-
-
   return (
     <div className="main-cont">
+      <SearchBar
+        searchA={searchA}
+        setSearchA={setSearchA}
+        searchB={searchB}
+        setSearchB={setSearchB}
+        handleSearch={handleSearch}
+        info={info}
+      />
 
-        <SearchBar  searchA={searchA}
-          setSearchA={setSearchA}
-          searchB={searchB}
-          setSearchB={setSearchB}
-          handleSearch={handleSearch}
-          info={info}  />
+      <MapContainer center={center} zoom={13} style={{ height: "100vh", width: "100%" }}>
+        <TileLayer
+          attribution="&copy; OpenStreetMap contributors"
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
 
+        <MapClickHandler
+          pointA={pointA}
+          setPointA={setPointA}
+          pointB={pointB}
+          setPointB={setPointB}
+        />
 
+        {pointA && (
+          <Marker position={pointA}>
+            <Popup>Point A (Start)</Popup>
+          </Marker>
+        )}
+        {pointB && (
+          <Marker position={pointB}>
+            <Popup>Point B (Destination)</Popup>
+          </Marker>
+        )}
 
-
-        <MapContainer center={center} zoom={13} style={{ height: "100vh", width: "100%" }}>
-
-
-
-          <TileLayer
-            attribution="&copy; OpenStreetMap contributors"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-
-          <MapClickHandler setPointB={setPointB} style={{ "z-index":"1" , "position": "fixed"}} />
-
-
-
-
-          {pointA && (
-            <Marker position={pointA}>
-              <Popup>Point A (Start)</Popup>
-            </Marker>
-          )}
-          {pointB && (
-            <Marker position={pointB}>
-              <Popup>Point B (Destination)</Popup>
-            </Marker>
-          )}
-
-
-
-
-          {pointA && pointB && (
-            <Routing from={pointA} to={pointB} setInfo={setInfo} />
-          )}
-
-
+        {pointA && pointB && (
+          <Routing from={pointA} to={pointB} setInfo={setInfo} />
+        )}
       </MapContainer>
     </div>
   );
