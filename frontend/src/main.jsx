@@ -5,7 +5,11 @@ import App from './App.jsx'
 import { UserProvider } from './context/contextApi.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <UserProvider>
+ <UserProvider>
+   
+
+   
     <App />
+     
   </UserProvider>,
 )

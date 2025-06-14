@@ -72,3 +72,8 @@
 .sign-in-form > form h2{
     color: white;
 }
+
+.searchbar-wrapper {
+  z-index: 9999;
+  position: relative;
+}

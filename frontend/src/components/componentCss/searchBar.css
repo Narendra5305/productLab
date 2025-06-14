@@ -1,0 +1,139 @@
+.searchbar-wrapper {
+  width: 100%;
+  background-color: #224766;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+  overflow: visible; 
+}
+
+.searchbar-box {
+  background-color: white;
+  padding: 12px 16px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 850px;
+  position: relative;
+  z-index: 10;
+  overflow: visible; /* ✅ Critical for dropdown visibility */
+}
+
+.input-wrapper {
+  position: relative;
+  flex-shrink: 0;
+  overflow: visible; /* ✅ Make sure suggestion list is not clipped */
+}
+
+.searchbar-box input {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  width: 200px;
+  font-size: 13px;
+  transition: border-color 0.2s;
+}
+
+.searchbar-box input:focus {
+  border-color: #cc361e;
+  outline: none;
+}
+
+.searchbar-box button {
+  background-color: #cc361e;
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.searchbar-box button:hover {
+  background-color: #a72d17;
+}
+
+.auth-button {
+  display: flex;
+  align-items: center;
+}
+
+.click-hint {
+  font-size: 12px;
+  margin-top: 6px;
+  color: #ddd;
+  font-style: italic;
+}
+
+.info-display {
+  margin-top: 10px;
+  font-size: 13.5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
+  border-radius: 8px;
+  backdrop-filter: blur(3px);
+}
+
+.suggestion-list {
+  position: absolute;
+  top: 100%; /* ✅ Show just below input */
+  left: 0;
+  right: 0;
+  z-index: 9999; /* ✅ Higher than buttons or map */
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  max-height: 180px;
+  overflow-y: auto;
+  border-radius: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-list li {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.suggestion-list li:hover {
+  background-color: #f2f2f2;
+}
+
+@media (max-width: 600px) {
+  .searchbar-box {
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .searchbar-box input,
+  .searchbar-box button {
+    width: 100%;
+  }
+
+  .auth-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .auth-button button {
+    width: 100%;
+  }
+}

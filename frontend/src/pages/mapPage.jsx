@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import "./pagecss/mapPage.css"
+
 
 import {
   MapContainer,
@@ -19,8 +19,7 @@ import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import "leaflet-routing-machine";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-
-
+import SearchBar from "../components/searchBar";
 
 
 
@@ -140,86 +139,48 @@ export default function MapComponent() {
 
   return (
     <div className="main-cont">
-      {/* Search Bar */}
-      <div
-        style={{
-    position: "absolute",
-    zIndex: 1000,
-    top: 10,
-    left: "50%",
-    transform: "translateX(-50%)", // Center horizontally
-    background: "#fff",
-    padding: "10px",
-    borderRadius: "8px",
-    boxShadow: "0 0 5px rgba(0,0,0,0.2)",
-  }}
-      >
-        <div>
-          <input
-            placeholder="Search Point A"
-            value={searchA}
-            onChange={(e) => setSearchA(e.target.value)}
-            style={{ width: "250px", marginBottom: "5px" }}
+
+        <SearchBar  searchA={searchA}
+          setSearchA={setSearchA}
+          searchB={searchB}
+          setSearchB={setSearchB}
+          handleSearch={handleSearch}
+          info={info}  />
+
+
+
+
+        <MapContainer center={center} zoom={13} style={{ height: "100vh", width: "100%" }}>
+
+
+
+          <TileLayer
+            attribution="&copy; OpenStreetMap contributors"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-        </div>
-        <div>
-          <input
-            placeholder="Search Point B"
-            value={searchB}
-            onChange={(e) => setSearchB(e.target.value)}
-            style={{ width: "250px" }}
-          />
-        </div>
-        <button onClick={handleSearch} style={{ marginTop: "5px" }}>
-          Search Route
-        </button>
-        <p style={{ fontSize: "12px", marginTop: "5px" }}>
-          Or click on the map to set Point B
-        </p>
-        {info && (
-          <>
-            <div><strong>Distance:</strong> {info.distance} km</div>
-            <div><strong>ETA:</strong> {info.time} minutes</div>
-          </>
-        )}
-      </div>
+
+          <MapClickHandler setPointB={setPointB} style={{ "z-index":"1" , "position": "fixed"}} />
 
 
 
 
-
-      <MapContainer center={center} zoom={13} style={{ height: "100vh", width: "100%" }}>
-
-
-
-        <TileLayer
-          attribution="&copy; OpenStreetMap contributors"
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-
-        <MapClickHandler setPointB={setPointB} />
-
-
-
-
-        {pointA && (
-          <Marker position={pointA}>
-            <Popup>Point A (Start)</Popup>
-          </Marker>
-        )}
-        {pointB && (
-          <Marker position={pointB}>
-            <Popup>Point B (Destination)</Popup>
-          </Marker>
-        )}
+          {pointA && (
+            <Marker position={pointA}>
+              <Popup>Point A (Start)</Popup>
+            </Marker>
+          )}
+          {pointB && (
+            <Marker position={pointB}>
+              <Popup>Point B (Destination)</Popup>
+            </Marker>
+          )}
 
 
 
 
-        {pointA && pointB && (
-          <Routing from={pointA} to={pointB} setInfo={setInfo} />
-        )}
-
+          {pointA && pointB && (
+            <Routing from={pointA} to={pointB} setInfo={setInfo} />
+          )}
 
 
       </MapContainer>
